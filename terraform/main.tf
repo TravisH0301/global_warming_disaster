@@ -12,7 +12,7 @@ terraform {
 
 # Configure AWS provider
 provider "aws" {
-  region  = "var.aws_region"
+  region  = var.aws_region
 }
 
 # Configure S3 bucket
