@@ -1,7 +1,7 @@
 *.conf
 test/*
 terraform/*
-terraform/!*.tf
+!*.tf
 airflow/plugins/*
 airflow/logs/*
 airflow/extracts/*
