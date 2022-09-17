@@ -9,5 +9,5 @@ variable "aws_region" {
 variable "s3_bucket_name" {
   description = "Name for S3 bucket"
   type        = string
-  default     = "global_warming_bucket"
+  default     = "global-warming-bucket"
 }
