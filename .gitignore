@@ -1,0 +1,8 @@
+*.conf
+test/*
+terraform/*
+terraform/!*.tf
+airflow/plugins/*
+airflow/logs/*
+airflow/extracts/*
+airflow/.env
