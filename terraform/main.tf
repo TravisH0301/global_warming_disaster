@@ -45,8 +45,8 @@ resource "aws_s3_bucket" "gold" {
 # Upload Python scripts to S3 bucket
 resource "aws_s3_object" "ingress_loader" {
   bucket = aws_s3_bucket.scripts.id
-  key    = "ingress_loader.py"
-  source = "../code/ingress_loader.py"
+  key    = "ingress_loader.zip"
+  source = "../code/ingress_loader.zip"
 }
 
 resource "aws_s3_object" "ingress_to_bronze" {
