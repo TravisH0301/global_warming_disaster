@@ -16,14 +16,23 @@ provider "aws" {
 }
 
 # Configure S3 bucket
-## Create S3 bucket
-resource "aws_s3_bucket" "s3_bucket" {
-  bucket = var.s3_bucket_name
+## Create S3 buckets
+resource "aws_s3_bucket" "ingress" {
+  bucket = "gwd-ingress"
   force_destroy = true  # delete everything stored when destroyed
 }
 
-## Set access control list for S3 bucket
-resource "aws_s3_bucket_acl" "s3_bucket_acl" {
-  bucket = aws_s3_bucket.s3_bucket.id
-  acl    = "private"
+resource "aws_s3_bucket" "bronze" {
+  bucket = "gwd-bronze"
+  force_destroy = true  # delete everything stored when destroyed
+}
+
+resource "aws_s3_bucket" "silver" {
+  bucket = "gwd-silver"
+  force_destroy = true  # delete everything stored when destroyed
+}
+
+resource "aws_s3_bucket" "gold" {
+  bucket = "gwd-gold"
+  force_destroy = true  # delete everything stored when destroyed
 }
