@@ -1,5 +1,5 @@
 ########################################################################################
-# Script name: ingress_loader.py
+# Script name: lambda_function.py
 # Description: This script fetches historical records of Australian natural disaster,
 # global temperature index and Australian maximum temperature. And it loads the raw
 # datasets into S3 bucket ingress.
@@ -15,6 +15,7 @@ import pytz
 import requests
 import boto3
 from io import StringIO
+
 
 def fetch_nat_dis():
     """For natural disaster data, the Australian disaster dataset is used.
@@ -119,6 +120,20 @@ def save_df_to_s3(df, bucket_name, file_name):
 
 # Define main function
 def main():
+    # Define variables
+    ## API URLs
+    url_nat_dis = "https://data.gov.au/data/api/3/action/datastore_search?resource_id=ad5c6594-571e-4874-994c-a9f964d789df&limit=50000"
+    url_glo_temp = "https://data.giss.nasa.gov/gistemp/graphs/graph_data/Global_Mean_Estimates_based_on_Land_and_Ocean_Data/graph.txt"
+    url_temp_ano = "http://www.bom.gov.au/web01/ncc/www/cli_chg/timeseries/tmax/allmonths/aus/latest.txt"
+    ## S3 bucket
+    target_bucket = "gwd-ingress"
+    file_nat_dis = "df_dis_ingress.csv"
+    file_glo_temp = "df_glo_ingress.csv"
+    file_temp_ano = "df_ano_ingress.csv"
+    ## Date
+    timezone = pytz.timezone('Australia/Melbourne')
+    today = datetime.datetime.now(timezone).strftime("%Y-%m-%d")
+
     # Fetch datasets
     print("Fetching datasets...")
     ## Natural disaster
@@ -145,21 +160,6 @@ def main():
 
     print("Data load has completed.")
 
-
-if __name__ == "__main__":
-    # Define variables
-    ## API URLs
-    url_nat_dis = "https://data.gov.au/data/api/3/action/datastore_search?resource_id=ad5c6594-571e-4874-994c-a9f964d789df&limit=50000"
-    url_glo_temp = "https://data.giss.nasa.gov/gistemp/graphs/graph_data/Global_Mean_Estimates_based_on_Land_and_Ocean_Data/graph.txt"
-    url_temp_ano = "http://www.bom.gov.au/web01/ncc/www/cli_chg/timeseries/tmax/allmonths/aus/latest.txt"
-    ## S3 bucket
-    target_bucket = "gwd-ingress"
-    file_nat_dis = "df_dis_ingress.csv"
-    file_glo_temp = "df_glo_ingress.csv"
-    file_temp_ano = "df_ano_ingress.csv"
-    ## Date
-    timezone = pytz.timezone('Australia/Melbourne')
-    today = datetime.datetime.now(timezone).strftime("%Y-%m-%d")
-
+def lambda_handler(event, context):
     # Run process
     main()
