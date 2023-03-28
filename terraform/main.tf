@@ -17,6 +17,11 @@ provider "aws" {
 
 # Configure S3 bucket
 ## Create S3 buckets
+resource "aws_s3_bucket" "scripts" {
+  bucket = "gwd-scripts"
+  force_destroy = true  # delete everything stored when destroyed
+}
+
 resource "aws_s3_bucket" "ingress" {
   bucket = "gwd-ingress"
   force_destroy = true  # delete everything stored when destroyed
