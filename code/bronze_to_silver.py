@@ -10,6 +10,7 @@
 import sys
 import re
 import statsmodels.api as sm
+import pandas as pd
 
 from awsglue.context import GlueContext
 from awsglue.dynamicframe import DynamicFrame
@@ -118,25 +119,22 @@ def create_columns(df):
 
 def apply_smoothing(df_anomaly):
     # Prepare data for Lowess smoothing
-    df_anomaly = df_anomaly.withColumn("row_num", F.row_number().over(Window.orderBy("Date")))
-    df_anomaly_pd = df_anomaly.select("row_num", "Anomaly").toPandas()
+    df_pd = df_anomaly.toPandas()
+    df_pd["Date"] = pd.to_datetime(df_pd["Date"])
+    df_pd = df_pd.sort_values("Date", ascending=True)
 
     # Apply Lowess smoothing on Monthly Anomaly
-    x = df_anomaly_pd["row_num"].values
-    y = df_anomaly_pd["Anomaly"].values
+    x = (df_pd["Date"].dt.year * 100 + df_pd["Date"].dt.month).values
+    y = df_pd["Anomaly"].values
     xy_lowess = sm.nonparametric.lowess(exog=x, endog=y, is_sorted=True, frac=0.2)
     y_lowess = xy_lowess[:, 1]
 
     # Add Lowess smoothed data to the DataFrame
-    df_lowess_pd = df_anomaly_pd.copy()
-    df_lowess_pd["Anomaly_Lowess"] = y_lowess
-    df_lowess = spark.createDataFrame(df_lowess_pd)
+    df_pd["Anomaly_Lowess"] = y_lowess
+    df_pd["Date"] = df_pd["Date"].dt.date
+    df_lowess = spark.createDataFrame(df_pd)
 
-    # Join the smoothed data back to the original DataFrame
-    df_result = df_anomaly.join(df_lowess.select("row_num", "Anomaly_Lowess"), on="row_num", how="inner") \
-                           .drop("row_num")
-
-    return df_result
+    return df_lowess
 
 def transform_ano(df):
     df_ano_col = create_columns(df)
