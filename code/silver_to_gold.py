@@ -34,6 +34,7 @@ def denorm_ano(df_ano):
 def apply_smoothing(df, frac=0.2):
     # Prepare data for Lowess smoothing
     df_pd = df.toPandas()
+    df_pd = df_pd.sort_values("Year", ascending=True)
 
     # Apply Lowess smoothing
     x = df_pd["Year"].values
