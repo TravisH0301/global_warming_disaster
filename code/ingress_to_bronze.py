@@ -8,6 +8,7 @@
 
 # Import libraries
 import sys
+
 from awsglue.context import GlueContext
 from awsglue.dynamicframe import DynamicFrame
 from awsglue.utils import getResolvedOptions

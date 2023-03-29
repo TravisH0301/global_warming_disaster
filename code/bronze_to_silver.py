@@ -8,6 +8,9 @@
 
 # Import libraries
 import sys
+import re
+import statsmodels.api as sm
+
 from awsglue.context import GlueContext
 from awsglue.dynamicframe import DynamicFrame
 from awsglue.utils import getResolvedOptions
@@ -18,8 +21,6 @@ from delta import *
 from pyspark.sql import functions as F
 from pyspark.sql.types import StringType, IntegerType, FloatType, DateType, BooleanType
 from pyspark.sql.window import Window
-import statsmodels.api as sm
-import re
 
 
 # Define transformation functions
