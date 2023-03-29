@@ -6,3 +6,5 @@ airflow/plugins/*
 airflow/logs/*
 airflow/extracts/*
 airflow/.env
+code/ingress_load/
+.vscode
