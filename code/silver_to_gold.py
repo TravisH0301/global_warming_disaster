@@ -97,17 +97,17 @@ def main():
 
     # Write analytical datasets to S3 gold bucket in Delta Lake format
     logger.info("Writing analytical datasets in delta lake to S3 gold bucket...")
-    df_con_year.write.format("delta").mode("overwrite").save(f"{s3_output_path}df_con_year")
-    df_dis_agg.write.format("delta").mode("overwrite").save(f"{s3_output_path}df_dis_agg")
-    df_ano_denorm.write.format("delta").mode("overwrite").save(f"{s3_output_path}df_ano_denorm")
+    df_con_year.write.format("delta").mode("overwrite").save(f"{s3_output_path}consolidated_measures")
+    df_dis_agg.write.format("delta").mode("overwrite").save(f"{s3_output_path}categorical_disasters")
+    df_ano_denorm.write.format("delta").mode("overwrite").save(f"{s3_output_path}temp_anomalies")
 
     # Generate Manifest files for Athena/Catalog
     logger.info("Generating manifest files...")
-    deltaTable_dis = DeltaTable.forPath(spark, f"{s3_output_path}df_con_year")
+    deltaTable_dis = DeltaTable.forPath(spark, f"{s3_output_path}consolidated_measures")
     deltaTable_dis.generate("symlink_format_manifest")
-    deltaTable_glo = DeltaTable.forPath(spark, f"{s3_output_path}df_dis_agg")
+    deltaTable_glo = DeltaTable.forPath(spark, f"{s3_output_path}categorical_disasters")
     deltaTable_glo.generate("symlink_format_manifest")
-    deltaTable_ano = DeltaTable.forPath(spark, f"{s3_output_path}df_ano_denorm")
+    deltaTable_ano = DeltaTable.forPath(spark, f"{s3_output_path}temp_anomalies")
     deltaTable_ano.generate("symlink_format_manifest")
 
     logger.info("Data load is completed.")
@@ -143,7 +143,3 @@ if __name__ == "__main__":
 
     # Run main process
     main()
-
-
-
-
