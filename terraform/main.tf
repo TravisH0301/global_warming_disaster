@@ -43,12 +43,6 @@ resource "aws_s3_bucket" "gold" {
 }
 
 # Upload Python scripts to S3 bucket
-resource "aws_s3_object" "ingress_loader" {
-  bucket = aws_s3_bucket.scripts.id
-  key    = "ingress_loader.zip"
-  source = "../code/ingress_loader.zip"
-}
-
 resource "aws_s3_object" "ingress_to_bronze" {
   bucket = aws_s3_bucket.scripts.id
   key    = "ingress_to_bronze.py"
@@ -65,4 +59,17 @@ resource "aws_s3_object" "silver_to_gold" {
   bucket = aws_s3_bucket.scripts.id
   key    = "silver_to_gold.py"
   source = "../code/silver_to_gold.py"
+}
+
+# Upload dependencies to S3 bucket
+resource "aws_s3_object" "lambda_dep" {
+  bucket = aws_s3_bucket.scripts.id
+  key    = "python.zip"
+  source = "../dependency/python.zip"
+}
+
+resource "aws_s3_object" "glue_delta_dep" {
+  bucket = aws_s3_bucket.scripts.id
+  key    = "delta-core_2.12-1.0.0.jar"
+  source = "../dependency/delta-core_2.12-1.0.0.jar"
 }
