@@ -22,6 +22,11 @@ resource "aws_s3_bucket" "scripts" {
   force_destroy = true  # delete everything stored when destroyed
 }
 
+resource "aws_s3_bucket" "airflow-dags" {
+  bucket = "gwd-dags"
+  force_destroy = true  # delete everything stored when destroyed
+}
+
 resource "aws_s3_bucket" "ingress" {
   bucket = "gwd-ingress"
   force_destroy = true  # delete everything stored when destroyed
