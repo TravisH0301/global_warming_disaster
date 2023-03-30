@@ -1,0 +1,2 @@
+# Requirement for Airflow DAG
+apache-airflow-providers-amazon
