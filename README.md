@@ -12,7 +12,7 @@ The escalating impacts of global warming are becoming increasingly evident in va
 This project aims to investigate the relationship between global warming and the frequency and intensity of these events in Australia by building a comprehensive data infrastructure on AWS. By analyzing various datasets, including the global temperature index, temperature anomalies, and natural disaster occurrences, this seeks to uncover key insights that can help us better understand the implications of climate change for Australia's future.
 
 ## Data Infrastructure
-<img src="https://github.com/TravisH0301/global_warming_disaster/blob/master/image/data_architecture.jpg" width="800">
+<!-- <img src="https://github.com/TravisH0301/global_warming_disaster/blob/master/image/data_architecture.jpg" width="800"> -->
 
 ### Choice of Technologies
 - Terraform: Terraform builds S3 buckets and uploads data processing dependencies into the buckets.
