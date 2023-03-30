@@ -15,33 +15,34 @@ This project aims to investigate the relationship between global warming and the
 <img src="https://github.com/TravisH0301/global_warming_disaster/blob/master/image/data_architecture.jpg" width="800">
 
 ### Choice of Technologies
-- Terraform: Terraform builds S3 buckets and uploads data processing dependencies into the buckets.
-- AWS Lambda: Lambda extracts raw data and loads it into the ingress bucket in S3.
+- **Terraform**: Terraform builds S3 buckets and uploads data processing dependencies into the buckets.
+- **AWS Lambda**: Lambda extracts raw data and loads it into the ingress bucket in S3.
 Given the simplicity of this data process, Lambda was chosen to minimise the running cost.
-- AWS Glue: Glue runs Spark jobs to transform the data through bronze, silver and gold buckets, storing in Delta Lake format. Additionally, Glue crawlers maintain the data catalog of delta tables. AWS EMR and AWS Batch were considered but not chosen due to the nature of light workloads and Glue's pre-configured Spark environment.
-- Amazon S3 & Delta Lake: S3 serves as both data storage and lakehouse. Using Delta Lake and its medallion architecture, the lakehouse is established, eliminating the need for a separate data warehouse.
-- Apache Airflow: Airflow orchestrates the entire data workflow by triggering the Lambda function and Glue jobs. 
-- Amazon Athena: Athena serves as an query engine.
-- Amazon Quicksight: Quicksight is used to analyse and visualise data insights.
+- **AWS Glue**: Glue runs Spark jobs to transform the data through bronze, silver and gold buckets, storing in Delta Lake format. Additionally, Glue crawlers maintain the data catalog of delta tables. AWS EMR and AWS Batch were considered but not chosen due to the nature of light workloads and Glue's pre-configured Spark environment.
+- **Amazon S3 & Delta Lake**: S3 serves as both data storage and lakehouse. Using Delta Lake and its medallion architecture, the lakehouse is established, eliminating the need for a separate data warehouse.
+- **Apache Airflo**w: Airflow orchestrates the entire data workflow by triggering the Lambda function and Glue jobs. 
+- **Amazon Athena**: Athena serves as an query engine.
+- **Amazon Quicksight**: Quicksight is used to analyse and visualise data insights.
 
 ## Data Workflow
 <img src="https://github.com/TravisH0301/global_warming_disaster/blob/master/image/airflow_dag.jpg" width="600">
 
-- ingress_loader: A Lambda function fetches raw data from data sources via API and loads it
+- **ingress_loader**: A Lambda function fetches raw data from data sources via API and loads it
 into the ingress layer in CSV format.
-- ingress_to_bronze: A Glue job reads the raw data and stores it in the bronze layer as delta
+- **ingress_to_bronze**: A Glue job reads the raw data and stores it in the bronze layer as delta
 tables.
-- bronze_to_silver: A Glue job transforms the raw data and loads it into the silver layer in
+- **bronze_to_silver**: A Glue job transforms the raw data and loads it into the silver layer in
 Delta Lake format.
-- silver_to_gold: A Glue job consolidates, denormalises and aggregates the transformed data and
+- **silver_to_gold**: A Glue job consolidates, denormalises and aggregates the transformed data and
 stores the delta tables in the gold layer.
 
 ## Data Modelling
 <Data Modelling>
-- Ingress layer: Serves as the ingestion layer, holding raw data in CSV format.
-- Bronze layer: Contains raw data in Delta Lake format.
-- Silver layer: Holds transformed delta tables as individual entities.
-- Gold layer: Contains consumption-ready delta tables for data analysis.
+
+- **Ingress layer**: Serves as the ingestion layer, holding raw data in CSV format.
+- **Bronze layer**: Contains raw data in Delta Lake format.
+- **Silver layer**: Holds transformed delta tables as individual entities.
+- **Gold layer**: Contains consumption-ready delta tables for data analysis.
 
 ## Data Insights
 The analysis reveals several noteworthy findings that emphasise the impact of global warming on Australia, while acknowledging that climate change is not the sole cause of the observed changes:
