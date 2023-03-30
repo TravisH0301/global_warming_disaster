@@ -66,6 +66,12 @@ resource "aws_s3_object" "silver_to_gold" {
   source = "../code/silver_to_gold.py"
 }
 
+resource "aws_s3_object" "airflow-dag" {
+  bucket = aws_s3_bucket.airflow-dags.id
+  key    = "dags/airflow_dag.py"
+  source = "../code/airflow_dag.py"
+}
+
 # Upload dependencies to S3 bucket
 resource "aws_s3_object" "lambda_dep" {
   bucket = aws_s3_bucket.scripts.id
