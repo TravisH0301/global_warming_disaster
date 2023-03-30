@@ -1,6 +1,5 @@
 # Impact of Global Warming on Australia
 - [Data Infrastructure](#data-infrastructure)
-  - [Choice of Technologies](#choice-of-technologies)
 - [Data Workflow](#data-workflow)
 - [Data Modelling](#data-modelling)
 - [Data Insights](#data-insights)
@@ -14,7 +13,6 @@ This project aims to investigate the relationship between global warming and the
 ## Data Infrastructure
 <img src="https://github.com/TravisH0301/global_warming_disaster/blob/master/image/data_architecture.jpg" width="800">
 
-### Choice of Technologies
 - **Terraform**: Terraform builds S3 buckets and uploads data processing dependencies into the buckets.
 - **AWS Lambda**: Lambda extracts raw data and loads it into the ingress bucket in S3.
 Given the simplicity of this data process, Lambda was chosen to minimise the running cost.
