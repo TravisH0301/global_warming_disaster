@@ -1,8 +1,15 @@
 # Impact of Global Warming on Australia
+- [Data Infrastructure](#data-infrastructure)
+  - [Choice of Technologies](#choice-of-technologies)
+- [Data Workflow](#data-workflow)
+- [Data Modelling](#data-modelling)
+- [Data Insights](#data-insights)
+- [Future Improvements](#future-improvements)
+- [Data Sources](#data-sources)
 
-<Table of Contents>
+The escalating impacts of global warming are becoming increasingly evident in various parts of the world, with Australia being no exception. In recent years, the country has experienced significant temperature anomalies and natural disasters, raising concerns about the direct and indirect consequences of climate change. 
 
-The escalating impacts of global warming are becoming increasingly evident in various parts of the world, with Australia being no exception. In recent years, the country has experienced significant temperature anomalies and natural disasters, raising concerns about the direct and indirect consequences of climate change. This project aims to investigate the relationship between global warming and the frequency and intensity of these events in Australia by building a comprehensive data infrastructure on AWS. By analyzing various datasets, including the global temperature index, temperature anomalies, and natural disaster occurrences, this seeks to uncover key insights that can help us better understand the implications of climate change for Australia's future.
+This project aims to investigate the relationship between global warming and the frequency and intensity of these events in Australia by building a comprehensive data infrastructure on AWS. By analyzing various datasets, including the global temperature index, temperature anomalies, and natural disaster occurrences, this seeks to uncover key insights that can help us better understand the implications of climate change for Australia's future.
 
 ## Data Infrastructure
 <Data Architecture Diagram>
@@ -38,7 +45,7 @@ stores the delta tables in the gold layer.
 ## Data Insights
 The analysis reveals several noteworthy findings that emphasise the impact of global warming on Australia, while acknowledging that climate change is not the sole cause of the observed changes:
 
-<img src="https://github.com/TravisH0301/global_warming_disaster/blob/master/image/dashboard.jpg" width="800">
+<img src="https://github.com/TravisH0301/global_warming_disaster/blob/master/image/dashboard.jpg" width="1000">
 
 1. A notable correlation exists among the global temperature index, temperature anomalies, and natural disaster occurrences in Australia. All of these metrics have been increasing over time, with the rate of change becoming more pronounced in recent years.
 2. Australia has experienced a steeper incline in the yearly change of temperature anomalies. This trend suggests that the country is experiencing significant temperature shifts, which may contribute to the increased frequency and intensity of natural disasters.
