@@ -22,7 +22,7 @@ with DAG(
         "start_date": datetime.datetime(2022, 11, 20),
         "retries": 0
     },
-    description="DAG to trigger a Lambda function followed by Glue Spark jobs for Global Warming Disaster analysis.",
+    description="DAG to trigger a data pipeline for Global Warming Disaster analysis.",
     schedule_interval=datetime.timedelta(days=30),
     catchup=False,
 ) as dag:

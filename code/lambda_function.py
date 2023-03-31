@@ -19,7 +19,8 @@ from io import StringIO
 
 def fetch_nat_dis():
     """For natural disaster data, the Australian disaster dataset is used.
-    Source: https://data.gov.au/dataset/ds-dga-26e2ebff-6cd5-4631-9653-18b56526e354/details?q=disaster
+    Source: https://data.gov.au/dataset/ds-dga-26e2ebff-6cd5-4631-9653-18b56526e354
+    /details?q=disaster
     """
     # Fetch Australian natural disaster dataset from API
     api_url = url_nat_dis
@@ -31,7 +32,8 @@ def fetch_nat_dis():
     return df_dis_raw
 
 def fetch_glo_temp():
-    """For this project, global land-ocean temperature index is selected as a global warming indicator.
+    """For this project, global land-ocean temperature index is selected
+    as a global warming indicator.
     Source: https://climate.nasa.gov/vital-signs/global-temperature/
     """
     # Fetch global temperature data from API
@@ -39,7 +41,9 @@ def fetch_glo_temp():
     response = requests.get(api_url)
     data = response.text
     # Extract headers from text data
-    headers = [header for header in data.split("\n")[3].strip().split(" ") if header != ""]
+    headers = [
+        header for header in data.split("\n")[3].strip().split(" ") if header != ""
+    ]
     # Extract values from text data
     year_li = []
     temp_li = []
@@ -55,12 +59,16 @@ def fetch_glo_temp():
     return df_glo_raw
 
 def fetch_temp_ano():
-    """For Temperature anomalies, Australia's maximum temperature anomalies relative to 1961-1990 average are used.
+    """For Temperature anomalies, Australia's maximum temperature anomalies 
+    relative to 1961-1990 average are used.
     Source: http://www.bom.gov.au/state-of-the-climate/
-    Monthly temperature anomalies: http://www.bom.gov.au/web01/ncc/www/cli_chg/timeseries/tmax/allmonths/aus/latest.txt
+    Monthly temperature anomalies: http://www.bom.gov.au/web01/ncc/www/cli_chg
+    /timeseries/tmax/allmonths/aus/latest.txt
     """
     # Fetch annual max. temperature anomalies from API
-    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
+    }
     api_url_mon = url_temp_ano
     response_mon = requests.get(api_url_mon, headers=headers)
     data_mon = response_mon.text
@@ -80,7 +88,9 @@ def fetch_temp_ano():
 
 def filter_nat_dis(df_dis_raw):
     # Remove duplicates
-    df_dis_fil1 = df_dis_raw.drop_duplicates(subset=["title", "startDate", "endDate", "lat", "lon"])
+    df_dis_fil1 = df_dis_raw.drop_duplicates(
+        subset=["title", "startDate", "endDate", "lat", "lon"]
+    )
     # Drop null rows
     df_dis_fil2 = df_dis_fil1.dropna(how="all")
     

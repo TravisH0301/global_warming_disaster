@@ -57,11 +57,15 @@ def consolidate(df_dis, df_glo, df_ano_denorm):
     df_dis_agg_tot_smoothed = apply_smoothing(df_dis_agg_tot)
 
     # Aggregate temp anomaly (Lowess) dataset into yearly average
-    df_ano_denorm_agg_avg = df_ano_denorm.groupBy("Year").agg(F.mean("Anomaly_Lowess").alias("Temp_Anomaly_Lowess"))
+    df_ano_denorm_agg_avg = (df_ano_denorm.groupBy("Year")
+        .agg(F.mean("Anomaly_Lowess").alias("Temp_Anomaly_Lowess")))
 
     # Merge aggregated datasets with global temp dataset
-    df_con_year = (df_glo.join(df_dis_agg_tot_smoothed.drop("Disaster_Count"), on="Year", how="inner")
-                         .join(df_ano_denorm_agg_avg, on="Year", how="inner"))
+    df_con_year = (df_glo.join(
+        df_dis_agg_tot_smoothed.drop("Disaster_Count"), 
+        on="Year", 
+        how="inner"
+    ).join(df_ano_denorm_agg_avg, on="Year", how="inner"))
 
     return df_con_year
 
@@ -98,9 +102,12 @@ def main():
 
     # Write analytical datasets to S3 gold bucket in Delta Lake format
     logger.info("Writing analytical datasets in delta lake to S3 gold bucket...")
-    df_con_year.write.format("delta").mode("overwrite").save(f"{s3_output_path}consolidated_measures")
-    df_dis_agg.write.format("delta").mode("overwrite").save(f"{s3_output_path}categorical_disasters")
-    df_ano_denorm.write.format("delta").mode("overwrite").save(f"{s3_output_path}temp_anomalies")
+    df_con_year.write.format("delta").mode("overwrite") \
+        .save(f"{s3_output_path}consolidated_measures")
+    df_dis_agg.write.format("delta").mode("overwrite") \
+        .save(f"{s3_output_path}categorical_disasters")
+    df_ano_denorm.write.format("delta").mode("overwrite") \
+        .save(f"{s3_output_path}temp_anomalies")
 
     # Generate Manifest files for Athena/Catalog
     logger.info("Generating manifest files...")
@@ -117,11 +124,13 @@ def main():
 if __name__ == "__main__":
     # Create Spark session with Glue context
     ## Initialize the Spark session with Delta Lake configurations
-    spark = SparkSession.builder \
-        .appName("SilverToGold") \
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
-        .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
-        .getOrCreate()
+    spark = (SparkSession.builder
+        .appName("SilverToGold")
+        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
+        .config(
+            "spark.sql.catalog.spark_catalog", 
+            "org.apache.spark.sql.delta.catalog.DeltaCatalog"
+        ).getOrCreate())
     ## Initialize Glue context using the configured Spark session
     glueContext = GlueContext(spark)
 

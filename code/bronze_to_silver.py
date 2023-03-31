@@ -30,6 +30,7 @@ def filter_columns(df):
     return df.select("title", "startDate", "endDate", "lat", "lon")
 
 def extract_cat(title):
+    # Extract category from title
     try:
         category = re.findall("(.*?)\s-", title)[0]
     except:
@@ -44,27 +45,40 @@ def create_category_column(df):
 
 def filter_title(df, nat_dis_categories):
     df = create_category_column(df)
-    df_filter = df.filter(df["Category"].isin(nat_dis_categories))
-
-    return df_filter
+    
+    return df.filter(df["Category"].isin(nat_dis_categories))
 
 def filter_coord(df, lat_aus_min, lat_aus_max, lon_aus_min, lon_aus_max):
-    return df.filter((lat_aus_min <= df["lat"]) & (df["lat"] <= lat_aus_max) & (lon_aus_min <= df["lon"]) & (df["lon"] <= lon_aus_max))
+    # Filter records for Australian locations
+    df_filter = df.filter((lat_aus_min<=df["lat"]) & (df["lat"]<=lat_aus_max))
+    df_filter2 = df_filter.filter((lon_aus_min<=df["lon"]) & (df["lon"]<=lon_aus_max))
+    
+    return  df_filter2
 
 def rename_columns(df):
-    return df.withColumnRenamed("title", "Title") \
-             .withColumnRenamed("startDate", "Start_Date") \
-             .withColumnRenamed("endDate", "End_Date") \
-             .withColumnRenamed("lat", "Lat") \
-             .withColumnRenamed("lon", "Lon")
+    return (df.withColumnRenamed("title", "Title")
+        .withColumnRenamed("startDate", "Start_Date")
+        .withColumnRenamed("endDate", "End_Date")
+        .withColumnRenamed("lat", "Lat")
+        .withColumnRenamed("lon", "Lon"))
 
 def create_date_column(df):
-    return df.withColumn("Date_Str", F.regexp_extract("Start_Date", r"^(.*?)\s", 1)) \
-             .withColumn("Date", F.coalesce(F.to_date("Date_Str", "M/d/yyyy"), F.to_date("Date_Str", "d/M/yyyy")))
-
+    # Extract date from timestamp
+    df_str = df.withColumn("Date_Str", F.regexp_extract("Start_Date", r"^(.*?)\s", 1))
+    # Convert date string to date data type
+    df_date = df_str.withColumn(
+        "Date", 
+        F.coalesce(
+            F.to_date("Date_Str", "M/d/yyyy"), 
+            F.to_date("Date_Str", "d/M/yyyy")
+        )
+    )
+    
+    return df_date
+             
 def replace_env_cat(category, title):
+    # Return refined environmental category based on title
     title = title.lower()
-
     if (category == "Environmental") or (category == "Envionmental"):
         if "heatwave" in title:
             return "Heatwave"
@@ -78,8 +92,11 @@ def replace_env_cat(category, title):
         return category
 
 def refine_environmental_categories(df):
+    # Break down environmental category based on title
     replace_env_cat_udf = F.udf(replace_env_cat, StringType())
-    return df.withColumn("Category", replace_env_cat_udf(df["Category"], df["Title"]))
+    df_cat = df.withColumn("Category", replace_env_cat_udf(df["Category"], df["Title"]))
+    
+    return df_cat
 
 def drop_title_and_reorder_columns(df):
     return df.select("Category", "Date", "Lat", "Lon")
@@ -87,7 +104,13 @@ def drop_title_and_reorder_columns(df):
 def transform_dis(df):
     df_dis_fil = filter_columns(df)
     df_dis_fil = filter_title(df_dis_fil, nat_dis_categories)
-    df_dis_fil = filter_coord(df_dis_fil, lat_aus_min, lat_aus_max, lon_aus_min, lon_aus_max)
+    df_dis_fil = filter_coord(
+        df_dis_fil, 
+        lat_aus_min, 
+        lat_aus_max, 
+        lon_aus_min, 
+        lon_aus_max
+    )
     df_dis_col = rename_columns(df_dis_fil)
     df_dis_col = create_date_column(df_dis_col)
     df_dis_col = refine_environmental_categories(df_dis_col)
@@ -102,15 +125,21 @@ def transform_glo(df):
     # Rename columns
     df_glo_col = df_glo_fil.withColumnRenamed("Lowess5", "Global_Temp_Index_Lowess")
     # Change data types
-    df_glo_silver = df_glo_col.withColumn("Year", F.col("Year").cast(IntegerType())) \
-                           .withColumn("Global_Temp_Index_Lowess", F.col("Global_Temp_Index_Lowess").cast(FloatType()))
+    df_glo_silver = (df_glo_col.withColumn("Year", F.col("Year").cast(IntegerType()))
+        .withColumn(
+            "Global_Temp_Index_Lowess", 
+            F.col("Global_Temp_Index_Lowess").cast(FloatType())
+        ))
 
     return df_glo_silver
 
 ## Temperature anomalies data
 def create_columns(df):
-    # Convert date column from YYYYMM to YYYYMMDD by making it the first day of the month
-    df_date = df.withColumn("Date", F.to_date(F.concat(df["Date"], F.lit("01")), "yyyyMMdd"))
+    # Convert date column from YYYYMM to YYYYMMDD using the first day of the month
+    df_date = df.withColumn(
+        "Date", 
+        F.to_date(F.concat(df["Date"], F.lit("01")), "yyyyMMdd")
+    )
 
     # Convert anomaly from string to float
     df_anomaly = df_date.withColumn("Anomaly", F.col("Anomaly").cast(FloatType()))
@@ -162,9 +191,12 @@ def main():
 
     # Write transformed data to S3 silver bucket in Delta Lake format
     logger.info("Writing data in delta lake to S3 silver bucket...")
-    df_dis_silver.write.format("delta").mode("overwrite").save(f"{s3_output_path}df_dis_silver")
-    df_glo_silver.write.format("delta").mode("overwrite").save(f"{s3_output_path}df_glo_silver")
-    df_ano_silver.write.format("delta").mode("overwrite").save(f"{s3_output_path}df_ano_silver")
+    df_dis_silver.write.format("delta").mode("overwrite") \
+        .save(f"{s3_output_path}df_dis_silver")
+    df_glo_silver.write.format("delta").mode("overwrite") \
+        .save(f"{s3_output_path}df_glo_silver")
+    df_ano_silver.write.format("delta").mode("overwrite") \
+        .save(f"{s3_output_path}df_ano_silver")
 
     logger.info("Data load is completed.")
 
@@ -172,11 +204,13 @@ def main():
 if __name__ == "__main__":
     # Create Spark session with Glue context
     ## Initialize the Spark session with Delta Lake configurations
-    spark = SparkSession.builder \
-        .appName("BronzeToSilver") \
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
-        .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
-        .getOrCreate()
+    spark = (SparkSession.builder 
+        .appName("BronzeToSilver") 
+        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") 
+        .config(
+            "spark.sql.catalog.spark_catalog", 
+            "org.apache.spark.sql.delta.catalog.DeltaCatalog"
+        ).getOrCreate())
     ## Initialize Glue context using the configured Spark session
     glueContext = GlueContext(spark)
     
