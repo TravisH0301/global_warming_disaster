@@ -1,4 +1,4 @@
-# Impact of Global Warming on Australia
+# Impact Analysis of Global Warming on Australia
 - [Data Architecture](#data-architecture)
 - [Data Workflow](#data-workflow)
 - [Data Modelling](#data-modelling)
