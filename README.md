@@ -6,7 +6,7 @@
 - [Future Improvements](#future-improvements)
 - [Data Sources](#data-sources)
 
-The escalating impacts of global warming are becoming increasingly evident in various parts of the world, with Australia being no exception. In recent years, the country has experienced significant temperature anomalies and natural disasters, raising concerns about the direct and indirect consequences of climate change. 
+The escalating impacts of global warming are becoming increasingly evident in various parts of the world, with Australia being no exception. In recent years, the country has experienced significant temperature anomalies and natural disasters, raising concerns about the direct and indirect consequences of climate change.
 
 This project aims to investigate the relationship between global warming and the frequency and intensity of these events in Australia by building a comprehensive data architecture on AWS. By analyzing various datasets, including the global temperature index, temperature anomalies, and natural disaster occurrences, this seeks to uncover key insights that can help us better understand the implications of climate change for Australia's future.
 
@@ -18,7 +18,7 @@ This project aims to investigate the relationship between global warming and the
 Given the simplicity of this data process, Lambda was chosen to minimise the running cost.
 - **AWS Glue**: Glue runs Spark jobs to transform the data through bronze, silver and gold buckets, storing in Delta Lake format. Additionally, Glue crawlers maintain the data catalog of delta tables. AWS EMR and AWS Batch were considered but not chosen due to the nature of light workloads and Glue's pre-configured Spark environment.
 - **Amazon S3 & Delta Lake**: S3 serves as both data storage and lakehouse. Using Delta Lake and its medallion architecture, the lakehouse is established, eliminating the need for a separate data warehouse.
-- **Apache Airflow**: Airflow orchestrates the entire data workflow by triggering the Lambda function and Glue jobs. 
+- **Apache Airflow**: Airflow orchestrates the entire data workflow by triggering the Lambda function and Glue jobs.
 - **Amazon Athena**: Athena serves as an query engine.
 - **Amazon Quicksight**: Quicksight is used to analyse and visualise data insights.
 

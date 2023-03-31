@@ -6,18 +6,15 @@
 # Creator: Travis Hong
 # Repository: https://github.com/TravisH0301/global_warming_disaster
 ########################################################################################
-
 # Import libraries
-import pandas as pd
-import re
-import datetime
-import pytz
-import requests
-import boto3
 from io import StringIO
 
+import boto3
+import pandas as pd
+import requests
 
-def fetch_nat_dis():
+
+def fetch_nat_dis(url_nat_dis):
     """For natural disaster data, the Australian disaster dataset is used.
     Source: https://data.gov.au/dataset/ds-dga-26e2ebff-6cd5-4631-9653-18b56526e354
     /details?q=disaster
@@ -31,7 +28,8 @@ def fetch_nat_dis():
 
     return df_dis_raw
 
-def fetch_glo_temp():
+
+def fetch_glo_temp(url_glo_temp):
     """For this project, global land-ocean temperature index is selected
     as a global warming indicator.
     Source: https://climate.nasa.gov/vital-signs/global-temperature/
@@ -58,8 +56,9 @@ def fetch_glo_temp():
 
     return df_glo_raw
 
-def fetch_temp_ano():
-    """For Temperature anomalies, Australia's maximum temperature anomalies 
+
+def fetch_temp_ano(url_temp_ano):
+    """For Temperature anomalies, Australia's maximum temperature anomalies
     relative to 1961-1990 average are used.
     Source: http://www.bom.gov.au/state-of-the-climate/
     Monthly temperature anomalies: http://www.bom.gov.au/web01/ncc/www/cli_chg
@@ -86,6 +85,7 @@ def fetch_temp_ano():
 
     return df_ano_raw
 
+
 def filter_nat_dis(df_dis_raw):
     # Remove duplicates
     df_dis_fil1 = df_dis_raw.drop_duplicates(
@@ -93,8 +93,9 @@ def filter_nat_dis(df_dis_raw):
     )
     # Drop null rows
     df_dis_fil2 = df_dis_fil1.dropna(how="all")
-    
+
     return df_dis_fil2
+
 
 def filter_glo_temp(df_glo_raw):
     # Remove duplicates
@@ -104,6 +105,7 @@ def filter_glo_temp(df_glo_raw):
 
     return df_glo_fil2
 
+
 def filter_temp_ano(df_ano_raw):
     # Remove duplicates
     df_ano_fil1 = df_ano_raw.drop_duplicates()
@@ -111,6 +113,7 @@ def filter_temp_ano(df_ano_raw):
     df_ano_fil2 = df_ano_fil1.dropna(how="all")
 
     return df_ano_fil2
+
 
 def save_df_to_s3(df, bucket_name, file_name):
     # Create a CSV buffer
@@ -121,11 +124,7 @@ def save_df_to_s3(df, bucket_name, file_name):
     s3 = boto3.client("s3")
 
     # Put the CSV buffer into the S3 object
-    s3.put_object(
-        Body=csv_buffer.getvalue(),
-        Bucket=bucket_name,
-        Key=file_name
-    )
+    s3.put_object(Body=csv_buffer.getvalue(), Bucket=bucket_name, Key=file_name)
 
 
 # Define main function
@@ -140,18 +139,15 @@ def main():
     file_nat_dis = "df_dis_ingress.csv"
     file_glo_temp = "df_glo_ingress.csv"
     file_temp_ano = "df_ano_ingress.csv"
-    ## Date
-    timezone = pytz.timezone('Australia/Melbourne')
-    today = datetime.datetime.now(timezone).strftime("%Y-%m-%d")
 
     # Fetch datasets
     print("Fetching datasets...")
     ## Natural disaster
-    df_dis_raw = fetch_nat_dis()
+    df_dis_raw = fetch_nat_dis(url_nat_dis)
     ## Global temperature
-    df_glo_raw = fetch_glo_temp()
+    df_glo_raw = fetch_glo_temp(url_glo_temp)
     ## Temperature anomalies
-    df_ano_raw = fetch_temp_ano()
+    df_ano_raw = fetch_temp_ano(url_temp_ano)
 
     # Initial transformation
     print("Dropping invalid records from datasets...")
@@ -169,6 +165,7 @@ def main():
     save_df_to_s3(df_ano_filter, target_bucket, file_temp_ano)
 
     print("Data load has completed.")
+
 
 def lambda_handler(event, context):
     # Run process
