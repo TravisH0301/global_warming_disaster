@@ -45,6 +45,7 @@ stores the delta tables in the gold layer.
 ## Data Insights
 The analysis reveals several noteworthy findings that emphasise the impact of global warming on Australia, while acknowledging that climate change is not the sole cause of the observed changes:
 
+*Click image for higher resolution*
 <img src="https://github.com/TravisH0301/global_warming_disaster/blob/master/image/dashboard.jpg" width="1000">
 
 1. A notable correlation exists among the global temperature index, temperature anomalies, and natural disaster occurrences in Australia. All of these metrics have been increasing over time, with the rate of change becoming more pronounced in recent years.
