@@ -35,12 +35,16 @@ Delta Lake format.
 stores the delta tables in the gold layer.
 
 ## Data Modelling
-<Data Modelling>
-
 - **Ingress layer**: Serves as the ingestion layer, holding raw data in CSV format.
 - **Bronze layer**: Contains raw data in Delta Lake format.
 - **Silver layer**: Holds transformed delta tables as individual entities.
 - **Gold layer**: Contains consumption-ready delta tables for data analysis.
+
+In the gold layer, the following two aggregated tables are used for consumption. <br>
+- **CONSOLIDATED_YEARLY_AGG**: provides combined global warming indicators aggregated at a yearly level. This enables tracking changes in the global warming indicators over time.
+- **DISASTER_COUNT_AGG**: shows total number of disasters in Australia categorised by the disaster type. This helps to identify different types of disasters and their total number of occurrences in Australia.
+
+<img src="https://github.com/TravisH0301/global_warming_disaster/blob/master/image/gold_layer_tables.jpg" width="600">
 
 ## Data Insights
 The analysis reveals several noteworthy findings that emphasise the impact of global warming on Australia, while acknowledging that climate change is not the sole cause of the observed changes:
